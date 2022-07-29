@@ -13,7 +13,7 @@ The objective of this project is to create a simple infrastructure on AWS. The r
 5. Instance: t2.micro
 6. Ami: amzn2-ami-hvm-x86_64-gp2
 
-/images/architecture.png
+![Architecture](/images/architecture.PNG)
 
 ------------------
 
@@ -179,12 +179,13 @@ OBS: EOF (End Of File) is the way to specify a block of text that should not be 
 4. (RECOMMENDED) Type **`terraform destroy`** to destroy all infrastructure created. As the object of the project is study only, the resources created can generate costs in AWS if they are maintained. To avoid unwanted charges, perform step 4.
 
 OBS: Run VScode as administrator to avoid terminal directory access issues.
+
 ------------------
 ### Results 
 
 EC2 instance was created in AWS as defined resources.
 
-/images/ec2-console-instance.png
-/images/ec2-console-instance-security.png
+![EC2-console-instance](/images/ec2-console-instance.PNG)
+![EC2-console-instance-security](/images/ec2-console-instance-security.PNG)
 
 
