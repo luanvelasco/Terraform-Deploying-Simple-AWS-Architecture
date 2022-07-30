@@ -25,13 +25,25 @@ The objective of this project is to create a simple infrastructure on AWS. The r
 
 ```
 provider "aws" {
-  access_key = "XXXXXXX"
-  secret_key = "XXXXX"
-  region     = "us-east-2"
+  access_key = var.aws_access_key
+  secret_key = var.aws_secret_key
+  region     = var.aws_region
 }
 ```   
 
-OBS: It is not good practice to keep the `access_key`, `secret_key` fields in the configuration file. But for a first project, let's keep these fields using a temporary key for testing and then deactivate it.
+OBS: As good practice, now we're storying the data in environment variables:
+
+~~~
+# And we can store our sensitive data in environment variables like so
+# For Linux and MacOS
+export TF_VAR_aws_access_key=YOUR_ACCESS_KEY
+export TF_VAR_aws_secret_key=YOUR_SECRET_KEY
+
+# For PowerShell
+$env:TF_VAR_aws_access_key="YOUR_ACCESS_KEY"
+$env:TF_VAR_aws_secret_key="YOUR_SECRET_KEY"
+~~~
+
 
 2. **Data**: We use the word `data` to specify that this is a data source. 
   - The `aws_ssm_parameter` resource creates an SSM parameter in AWS Systems Manager Parameter Store. 
