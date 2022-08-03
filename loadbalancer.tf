@@ -2,6 +2,8 @@
 # RESOURCES
 ##################################################################################
 
+data "aws_elb_service_account" "root" {}
+
 resource "aws_lb" "nginx" {
   name               = "global-web-alb"
   internal           = false
@@ -11,14 +13,20 @@ resource "aws_lb" "nginx" {
 
   enable_deletion_protection = false
 
-    tags = local.common_tags
+  access_logs {
+    bucket  = aws_s3_bucket.web_bucket.bucket
+    prefix  = "alb-logs"
+    enabled = true
+  }
+
+  tags = local.common_tags
 }
 
 resource "aws_lb_target_group" "nginx" {
-  name        = "nginx-lb-alb-tg"
-  port        = 80
-  protocol    = "HTTP"
-  vpc_id      = aws_vpc.vpc.id
+  name     = "nginx-lb-alb-tg"
+  port     = 80
+  protocol = "HTTP"
+  vpc_id   = aws_vpc.vpc.id
 
   tags = local.common_tags
 }
