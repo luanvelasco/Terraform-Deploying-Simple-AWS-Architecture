@@ -36,14 +36,15 @@ provider "aws" {
 OBS: As good practice, now we're storying the data in environment variables:
 
 ~~~
-# And we can store our sensitive data in environment variables like so
+# # Instead of storing our AWS keys in input variables, we will instead store them in environment variables. The AWS provider will check for values stored in AWS_ACCESS_KEY_ID and AWS_SECRET_ACCESS_KEY environment variables.
+
 # For Linux and MacOS
-export TF_VAR_aws_access_key=YOUR_ACCESS_KEY
-export TF_VAR_aws_secret_key=YOUR_SECRET_KEY
+export AWS_ACCESS_KEY_ID=YOUR_ACCESS_KEY
+export AWS_SECRET_ACCESS_KEY=YOUR_SECRET_ACCESS_KEY
 
 # For PowerShell
-$env:TF_VAR_aws_access_key="YOUR_ACCESS_KEY"
-$env:TF_VAR_aws_secret_key="YOUR_SECRET_KEY"
+$env:AWS_ACCESS_KEY_ID="YOUR_ACCESS_KEY"
+$env:AWS_SECRET_ACCESS_KEY="YOUR_SECRET_ACCESS_KEY"
 ~~~
 
 
@@ -169,16 +170,21 @@ resource "aws_security_group" "nginx-sg" {
 # INSTANCES #
 resource "aws_instance" "nginx1" {
   ami                    = nonsensitive(data.aws_ssm_parameter.ami.value)
-  instance_type          = "t2.micro"
-  subnet_id              = aws_subnet.subnet1.id
+  instance_type          = var.aws_instance_type.small
+  subnet_id              = aws_subnet.subnet2.id
   vpc_security_group_ids = [aws_security_group.nginx-sg.id]
+  iam_instance_profile   = aws_iam_instance_profile.nginx_profile.name
+  depends_on             = [aws_iam_role_policy.allow_s3_all]
 
   user_data = <<EOF
 #! /bin/bash
 sudo amazon-linux-extras install -y nginx1
 sudo service nginx start
+aws s3 cp s3://${aws_s3_bucket.web_bucket.id}/website/index.html /home/ec2-user/index.html
+aws s3 cp s3://${aws_s3_bucket.web_bucket.id}/website/Globo_logo_Vert.png /home/ec2-user/Globo_logo_Vert.png
 sudo rm /usr/share/nginx/html/index.html
-echo '<html><head><title>Taco Team Server</title></head><body style=\"background-color:#1F778D\"><p style=\"text-align: center;\"><span style=\"color:#FFFFFF;\"><span style=\"font-size:28px;\">You did it! Have a &#127790;</span></span></p></body></html>' | sudo tee /usr/share/nginx/html/index.html
+sudo cp /home/ec2-user/index.html /usr/share/nginx/html/index.html
+sudo cp /home/ec2-user/Globo_logo_Vert.png /usr/share/nginx/html/Globo_logo_Vert.png
 EOF
 }
 ~~~
