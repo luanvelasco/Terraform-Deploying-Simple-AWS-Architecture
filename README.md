@@ -8,10 +8,12 @@ The objective of this project is to create a simple infrastructure on AWS. The r
 
 1. AWS us-east-2.
 2. VPC: 10.0.0.0/16.
-3. Public subnet: 10.0.0.0/24
+3. Public subnet: 10.0.0.0/24 and 10.0.1.0/24
 4. Security group: Nginx
-5. Instance: t2.micro
-6. Ami: amzn2-ami-hvm-x86_64-gp2
+5. Instance 1: t2.micro
+6. Instance 2: t2.micro
+7. Ami: amzn2-ami-hvm-x86_64-gp2
+8. Load Balancer
 
 ![Architecture](/images/architecture.PNG)
 
